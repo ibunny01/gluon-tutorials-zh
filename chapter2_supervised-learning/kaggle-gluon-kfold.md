@@ -36,7 +36,7 @@
 
 我们通过使用``pandas``读入数据。请确保安装了``pandas`` (``pip install pandas``)。
 
-```{.python .input}
+```{.python .input  n=1}
 import pandas as pd
 import numpy as np
 
@@ -48,18 +48,76 @@ all_X = pd.concat((train.loc[:, 'MSSubClass':'SaleCondition'],
 
 我们看看数据长什么样子。
 
-```{.python .input}
+```{.python .input  n=2}
 train.head()
+```
+
+```{.json .output n=2}
+[
+ {
+  "data": {
+   "text/html": "<div>\n<style>\n    .dataframe thead tr:only-child th {\n        text-align: right;\n    }\n\n    .dataframe thead th {\n        text-align: left;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>Id</th>\n      <th>MSSubClass</th>\n      <th>MSZoning</th>\n      <th>LotFrontage</th>\n      <th>LotArea</th>\n      <th>Street</th>\n      <th>Alley</th>\n      <th>LotShape</th>\n      <th>LandContour</th>\n      <th>Utilities</th>\n      <th>...</th>\n      <th>PoolArea</th>\n      <th>PoolQC</th>\n      <th>Fence</th>\n      <th>MiscFeature</th>\n      <th>MiscVal</th>\n      <th>MoSold</th>\n      <th>YrSold</th>\n      <th>SaleType</th>\n      <th>SaleCondition</th>\n      <th>SalePrice</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>1</td>\n      <td>60</td>\n      <td>RL</td>\n      <td>65.0</td>\n      <td>8450</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>Reg</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>...</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>2</td>\n      <td>2008</td>\n      <td>WD</td>\n      <td>Normal</td>\n      <td>208500</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>2</td>\n      <td>20</td>\n      <td>RL</td>\n      <td>80.0</td>\n      <td>9600</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>Reg</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>...</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>5</td>\n      <td>2007</td>\n      <td>WD</td>\n      <td>Normal</td>\n      <td>181500</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>3</td>\n      <td>60</td>\n      <td>RL</td>\n      <td>68.0</td>\n      <td>11250</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>IR1</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>...</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>9</td>\n      <td>2008</td>\n      <td>WD</td>\n      <td>Normal</td>\n      <td>223500</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>4</td>\n      <td>70</td>\n      <td>RL</td>\n      <td>60.0</td>\n      <td>9550</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>IR1</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>...</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>2</td>\n      <td>2006</td>\n      <td>WD</td>\n      <td>Abnorml</td>\n      <td>140000</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>5</td>\n      <td>60</td>\n      <td>RL</td>\n      <td>84.0</td>\n      <td>14260</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>IR1</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>...</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>12</td>\n      <td>2008</td>\n      <td>WD</td>\n      <td>Normal</td>\n      <td>250000</td>\n    </tr>\n  </tbody>\n</table>\n<p>5 rows \u00d7 81 columns</p>\n</div>",
+   "text/plain": "   Id  MSSubClass MSZoning  LotFrontage  LotArea Street Alley LotShape  \\\n0   1          60       RL         65.0     8450   Pave   NaN      Reg   \n1   2          20       RL         80.0     9600   Pave   NaN      Reg   \n2   3          60       RL         68.0    11250   Pave   NaN      IR1   \n3   4          70       RL         60.0     9550   Pave   NaN      IR1   \n4   5          60       RL         84.0    14260   Pave   NaN      IR1   \n\n  LandContour Utilities    ...     PoolArea PoolQC Fence MiscFeature MiscVal  \\\n0         Lvl    AllPub    ...            0    NaN   NaN         NaN       0   \n1         Lvl    AllPub    ...            0    NaN   NaN         NaN       0   \n2         Lvl    AllPub    ...            0    NaN   NaN         NaN       0   \n3         Lvl    AllPub    ...            0    NaN   NaN         NaN       0   \n4         Lvl    AllPub    ...            0    NaN   NaN         NaN       0   \n\n  MoSold YrSold  SaleType  SaleCondition  SalePrice  \n0      2   2008        WD         Normal     208500  \n1      5   2007        WD         Normal     181500  \n2      9   2008        WD         Normal     223500  \n3      2   2006        WD        Abnorml     140000  \n4     12   2008        WD         Normal     250000  \n\n[5 rows x 81 columns]"
+  },
+  "execution_count": 2,
+  "metadata": {},
+  "output_type": "execute_result"
+ }
+]
+```
+
+```{.python .input  n=5}
+all_X.head()
+```
+
+```{.json .output n=5}
+[
+ {
+  "data": {
+   "text/html": "<div>\n<style>\n    .dataframe thead tr:only-child th {\n        text-align: right;\n    }\n\n    .dataframe thead th {\n        text-align: left;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>MSSubClass</th>\n      <th>MSZoning</th>\n      <th>LotFrontage</th>\n      <th>LotArea</th>\n      <th>Street</th>\n      <th>Alley</th>\n      <th>LotShape</th>\n      <th>LandContour</th>\n      <th>Utilities</th>\n      <th>LotConfig</th>\n      <th>...</th>\n      <th>ScreenPorch</th>\n      <th>PoolArea</th>\n      <th>PoolQC</th>\n      <th>Fence</th>\n      <th>MiscFeature</th>\n      <th>MiscVal</th>\n      <th>MoSold</th>\n      <th>YrSold</th>\n      <th>SaleType</th>\n      <th>SaleCondition</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>60</td>\n      <td>RL</td>\n      <td>65.0</td>\n      <td>8450</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>Reg</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>Inside</td>\n      <td>...</td>\n      <td>0</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>2</td>\n      <td>2008</td>\n      <td>WD</td>\n      <td>Normal</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>20</td>\n      <td>RL</td>\n      <td>80.0</td>\n      <td>9600</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>Reg</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>FR2</td>\n      <td>...</td>\n      <td>0</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>5</td>\n      <td>2007</td>\n      <td>WD</td>\n      <td>Normal</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>60</td>\n      <td>RL</td>\n      <td>68.0</td>\n      <td>11250</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>IR1</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>Inside</td>\n      <td>...</td>\n      <td>0</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>9</td>\n      <td>2008</td>\n      <td>WD</td>\n      <td>Normal</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>70</td>\n      <td>RL</td>\n      <td>60.0</td>\n      <td>9550</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>IR1</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>Corner</td>\n      <td>...</td>\n      <td>0</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>2</td>\n      <td>2006</td>\n      <td>WD</td>\n      <td>Abnorml</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>60</td>\n      <td>RL</td>\n      <td>84.0</td>\n      <td>14260</td>\n      <td>Pave</td>\n      <td>NaN</td>\n      <td>IR1</td>\n      <td>Lvl</td>\n      <td>AllPub</td>\n      <td>FR2</td>\n      <td>...</td>\n      <td>0</td>\n      <td>0</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>0</td>\n      <td>12</td>\n      <td>2008</td>\n      <td>WD</td>\n      <td>Normal</td>\n    </tr>\n  </tbody>\n</table>\n<p>5 rows \u00d7 79 columns</p>\n</div>",
+   "text/plain": "   MSSubClass MSZoning  LotFrontage  LotArea Street Alley LotShape  \\\n0          60       RL         65.0     8450   Pave   NaN      Reg   \n1          20       RL         80.0     9600   Pave   NaN      Reg   \n2          60       RL         68.0    11250   Pave   NaN      IR1   \n3          70       RL         60.0     9550   Pave   NaN      IR1   \n4          60       RL         84.0    14260   Pave   NaN      IR1   \n\n  LandContour Utilities LotConfig      ...       ScreenPorch PoolArea PoolQC  \\\n0         Lvl    AllPub    Inside      ...                 0        0    NaN   \n1         Lvl    AllPub       FR2      ...                 0        0    NaN   \n2         Lvl    AllPub    Inside      ...                 0        0    NaN   \n3         Lvl    AllPub    Corner      ...                 0        0    NaN   \n4         Lvl    AllPub       FR2      ...                 0        0    NaN   \n\n  Fence MiscFeature MiscVal  MoSold  YrSold  SaleType  SaleCondition  \n0   NaN         NaN       0       2    2008        WD         Normal  \n1   NaN         NaN       0       5    2007        WD         Normal  \n2   NaN         NaN       0       9    2008        WD         Normal  \n3   NaN         NaN       0       2    2006        WD        Abnorml  \n4   NaN         NaN       0      12    2008        WD         Normal  \n\n[5 rows x 79 columns]"
+  },
+  "execution_count": 5,
+  "metadata": {},
+  "output_type": "execute_result"
+ }
+]
 ```
 
 数据大小如下。
 
-```{.python .input}
+```{.python .input  n=3}
 train.shape
 ```
 
-```{.python .input}
+```{.json .output n=3}
+[
+ {
+  "data": {
+   "text/plain": "(1460, 81)"
+  },
+  "execution_count": 3,
+  "metadata": {},
+  "output_type": "execute_result"
+ }
+]
+```
+
+```{.python .input  n=4}
 test.shape
+```
+
+```{.json .output n=4}
+[
+ {
+  "data": {
+   "text/plain": "(1459, 80)"
+  },
+  "execution_count": 4,
+  "metadata": {},
+  "output_type": "execute_result"
+ }
+]
 ```
 
 ## 预处理数据

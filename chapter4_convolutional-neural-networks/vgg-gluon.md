@@ -6,7 +6,7 @@
 
 VGG的一个关键是使用很多有着相对小的kernel（$3\times 3$）的卷积层然后接上一个池化层，之后再将这个模块重复多次。下面我们先定义一个这样的块：
 
-```{.python .input}
+```{.python .input  n=1}
 from mxnet.gluon import nn
 
 def vgg_block(num_convs, channels):
@@ -22,21 +22,35 @@ def vgg_block(num_convs, channels):
 
 我们实例化一个这样的块，里面有两个卷积层，每个卷积层输出通道是128：
 
-```{.python .input}
+```{.python .input  n=2}
 from mxnet import nd
 
 blk = vgg_block(2, 128)
 blk.initialize()
+# batch-size, input channel, size, size
 x = nd.random.uniform(shape=(2,3,16,16))
 y = blk(x)
 y.shape
+```
+
+```{.json .output n=2}
+[
+ {
+  "data": {
+   "text/plain": "(2, 128, 8, 8)"
+  },
+  "execution_count": 2,
+  "metadata": {},
+  "output_type": "execute_result"
+ }
+]
 ```
 
 可以看到经过一个这样的块后，长宽会减半，通道也会改变。
 
 然后我们定义如何将这些块堆起来：
 
-```{.python .input}
+```{.python .input  n=3}
 def vgg_stack(architecture):
     out = nn.Sequential()
     for (num_convs, channels) in architecture:
@@ -46,7 +60,7 @@ def vgg_stack(architecture):
 
 这里我们定义一个最简单的一个VGG结构，它有8个卷积层，和跟Alexnet一样的3个全连接层。这个网络又称VGG 11.
 
-```{.python .input}
+```{.python .input  n=4}
 num_outputs = 10
 architecture = ((1,64), (1,128), (2,256), (2,512), (2,512))
 net = nn.Sequential()
@@ -62,11 +76,28 @@ with net.name_scope():
         nn.Dense(num_outputs))
 ```
 
+```{.python .input  n=5}
+net
+```
+
+```{.json .output n=5}
+[
+ {
+  "data": {
+   "text/plain": "Sequential(\n  (0): Sequential(\n    (0): Sequential(\n      (0): Conv2D(None -> 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (1): MaxPool2D(size=(2, 2), stride=(2, 2), padding=(0, 0), ceil_mode=False)\n    )\n    (1): Sequential(\n      (0): Conv2D(None -> 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (1): MaxPool2D(size=(2, 2), stride=(2, 2), padding=(0, 0), ceil_mode=False)\n    )\n    (2): Sequential(\n      (0): Conv2D(None -> 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (1): Conv2D(None -> 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (2): MaxPool2D(size=(2, 2), stride=(2, 2), padding=(0, 0), ceil_mode=False)\n    )\n    (3): Sequential(\n      (0): Conv2D(None -> 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (1): Conv2D(None -> 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (2): MaxPool2D(size=(2, 2), stride=(2, 2), padding=(0, 0), ceil_mode=False)\n    )\n    (4): Sequential(\n      (0): Conv2D(None -> 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (1): Conv2D(None -> 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))\n      (2): MaxPool2D(size=(2, 2), stride=(2, 2), padding=(0, 0), ceil_mode=False)\n    )\n  )\n  (1): Flatten\n  (2): Dense(None -> 4096, Activation(relu))\n  (3): Dropout(p = 0.5, axes=())\n  (4): Dense(None -> 4096, Activation(relu))\n  (5): Dropout(p = 0.5, axes=())\n  (6): Dense(None -> 10, linear)\n)"
+  },
+  "execution_count": 5,
+  "metadata": {},
+  "output_type": "execute_result"
+ }
+]
+```
+
 ## 模型训练
 
 这里跟Alexnet的训练代码一样除了我们只将图片扩大到$96\times 96$来节省些计算，和默认使用稍微大点的学习率。
 
-```{.python .input}
+```{.python .input  n=6}
 import sys
 sys.path.append('..')
 import utils
@@ -83,7 +114,17 @@ loss = gluon.loss.SoftmaxCrossEntropyLoss()
 trainer = gluon.Trainer(net.collect_params(), 
                         'sgd', {'learning_rate': 0.05})
 utils.train(train_data, test_data, net, loss,
-            trainer, ctx, num_epochs=1)
+            trainer, ctx, num_epochs=5)
+```
+
+```{.json .output n=6}
+[
+ {
+  "name": "stdout",
+  "output_type": "stream",
+  "text": "Start training on  gpu(0)\nEpoch 0. Loss: 0.873, Train acc 0.68, Test acc 0.85, Time 74.4 sec\n"
+ }
+]
 ```
 
 ## 总结
